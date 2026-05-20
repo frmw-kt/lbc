@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LBC Dashboard Background</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --yellow: #F5C200;
+    --yellow-dark: #E0AE00;
+    --dark: #1A1200;
+    --white: #FFFFFF;
+    --cream: #FFF5CC;
+  }
+
+  body {
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+    font-family: 'Helvetica Neue', 'Noto Sans JP', sans-serif;
+    background: var(--yellow);
+  }
+
+  .bg-wrapper {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    background: var(--yellow);
+    overflow: hidden;
+  }
+
+  /* ---- 幾何学的な装飾シェイプ ---- */
+  .shape-layer {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+  }
+
+  /* 左上の大きな平行四辺形 */
+  .para-1 {
+    position: absolute;
+    top: -80px;
+    left: -120px;
+    width: 520px;
+    height: 380px;
+    background: rgba(255,255,255,0.08);
+    transform: skewX(-15deg) skewY(-5deg);
+    border: 2px solid rgba(255,255,255,0.18);
+  }
+
+  /* 右下の大きな平行四辺形 */
+  .para-2 {
+    position: absolute;
+    bottom: -100px;
+    right: -100px;
+    width: 600px;
+    height: 420px;
+    background: rgba(0,0,0,0.06);
+    transform: skewX(-15deg) skewY(3deg);
+  }
+
+  /* 中央右寄りの小さい台形アクセント */
+  .para-3 {
+    position: absolute;
+    top: 50%;
+    right: 8%;
+    width: 260px;
+    height: 160px;
+    background: rgba(255,255,255,0.10);
+    transform: translateY(-50%) skewX(-20deg);
+    border-left: 3px solid rgba(255,255,255,0.30);
+  }
+
+  /* SVG ラインアート */
+  .line-svg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+  }
+
+  /* ---- テキストコンテンツ ---- */
+  .content {
+    position: relative;
+    z-index: 10;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 48px 72px;
+    gap: 0;
+  }
+
+  /* ブランドロゴ */
+  .brand-logo {
+    position: absolute;
+    top: 40px;
+    left: 72px;
+    font-size: 52px;
+    font-weight: 900;
+    letter-spacing: -2px;
+    color: var(--dark);
+    font-style: italic;
+    line-height: 1;
+  }
+  .brand-logo span {
+    color: var(--white);
+    opacity: 0.85;
+  }
+
+  /* MVVブロック */
+  .mvv-container {
+    display: flex;
+    flex-direction: column;
+    gap: 36px;
+    margin-top: 60px;
+  }
+
+  .mvv-block {
+    display: flex;
+    align-items: flex-start;
+    gap: 24px;
+    animation: fadeSlideIn 0.8s ease both;
+  }
+
+  .mvv-block:nth-child(1) { animation-delay: 0.1s; }
+  .mvv-block:nth-child(2) { animation-delay: 0.25s; }
+  .mvv-block:nth-child(3) { animation-delay: 0.4s; }
+
+  .mvv-label {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    color: var(--dark);
+    opacity: 0.55;
+    writing-mode: vertical-rl;
+    padding-top: 4px;
+    min-width: 18px;
+    text-transform: uppercase;
+  }
+
+  .mvv-divider {
+    width: 3px;
+    background: var(--dark);
+    opacity: 0.2;
+    border-radius: 2px;
+    align-self: stretch;
+    min-height: 40px;
+  }
+
+  .mvv-text-block { flex: 1; }
+
+  .mvv-main {
+    font-size: clamp(20px, 2.6vw, 34px);
+    font-weight: 900;
+    color: var(--dark);
+    line-height: 1.35;
+    letter-spacing: -0.5px;
+  }
+  .mvv-main .highlight {
+    color: var(--white);
+    font-style: italic;
+    font-size: 1.15em;
+  }
+  .mvv-main .accent-line {
+    display: block;
+  }
+
+  /* Amazing Standard の A ライン */
+  .a-line-decoration {
+    position: absolute;
+    bottom: 60px;
+    left: 72px;
+    display: flex;
+    align-items: flex-end;
+    gap: 0;
+    opacity: 0.25;
+  }
+
+  /* 右側の装飾 VALUE ウォーターマーク */
+  .watermark {
+    position: absolute;
+    right: 5%;
+    bottom: 48px;
+    font-size: clamp(80px, 10vw, 140px);
+    font-weight: 900;
+    font-style: italic;
+    color: rgba(255,255,255,0.18);
+    letter-spacing: -4px;
+    line-height: 1;
+    user-select: none;
+    animation: pulse 6s ease-in-out infinite;
+  }
+
+  /* 下部のグラデーションライン */
+  .bottom-accent {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 5px;
+    background: linear-gradient(90deg,
+      transparent 0%,
+      var(--dark) 20%,
+      rgba(0,0,0,0.5) 60%,
+      transparent 100%
+    );
+  }
+
+  /* 上部の細いライン */
+  .top-accent {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: rgba(0,0,0,0.15);
+  }
+
+  /* ---- アニメーション ---- */
+  @keyframes fadeSlideIn {
+    from { opacity: 0; transform: translateX(-20px); }
+    to   { opacity: 1; transform: translateX(0); }
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 0.18; }
+    50%       { opacity: 0.10; }
+  }
+
+  @keyframes shimmer {
+    0%   { background-position: -200% center; }
+    100% { background-position: 200% center; }
+  }
+
+  /* ---- ダッシュボード用オーバーレイ（コンテンツを重ねる場合） ---- */
+  .dashboard-overlay {
+    display: none; /* 実際の使用時に display:flex などに変更 */
+    position: absolute;
+    inset: 0;
+    z-index: 20;
+    padding: 24px;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  /* ---- レスポンシブ ---- */
+  @media (max-width: 768px) {
+    .content { padding: 32px 28px; }
+    .brand-logo { left: 28px; font-size: 36px; }
+    .mvv-main { font-size: 18px; }
+    .watermark { display: none; }
+    .a-line-decoration { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="bg-wrapper">
+
+  <!-- 上部アクセントライン -->
+  <div class="top-accent"></div>
+
+  <!-- 幾何学シェイプレイヤー -->
+  <div class="shape-layer">
+    <div class="para-1"></div>
+    <div class="para-2"></div>
+    <div class="para-3"></div>
+
+    <!-- SVG ラインアート (Amazing Standard の A 字モチーフ + 水平線) -->
+    <svg class="line-svg" viewBox="0 0 1440 900" preserveAspectRatio="xMidYMid slice"
+         fill="none" xmlns="http://www.w3.org/2000/svg">
+
+      <!-- 右側大きなAラインモチーフ -->
+      <g opacity="0.18" stroke="white" stroke-width="2.5" stroke-linecap="round">
+        <line x1="1100" y1="80"  x2="1200" y2="420"/>
+        <line x1="1200" y1="420" x2="1360" y2="420"/>
+        <line x1="1360" y1="420" x2="1440" y2="180"/>
+        <!-- クロスライン -->
+        <line x1="1130" y1="280" x2="1310" y2="280"/>
+      </g>
+
+      <!-- 左下の細いラインアクセント -->
+      <g opacity="0.12" stroke="white" stroke-width="1.5">
+        <line x1="0"   y1="820" x2="400" y2="760"/>
+        <line x1="400" y1="760" x2="800" y2="820"/>
+      </g>
+
+      <!-- 中央のドットグリッド -->
+      <g opacity="0.10" fill="white">
+        <circle cx="720" cy="80"  r="3"/>
+        <circle cx="760" cy="80"  r="3"/>
+        <circle cx="800" cy="80"  r="3"/>
+        <circle cx="840" cy="80"  r="3"/>
+        <circle cx="720" cy="120" r="3"/>
+        <circle cx="760" cy="120" r="3"/>
+        <circle cx="800" cy="120" r="3"/>
+        <circle cx="840" cy="120" r="3"/>
+        <circle cx="720" cy="160" r="3"/>
+        <circle cx="760" cy="160" r="3"/>
+        <circle cx="800" cy="160" r="3"/>
+        <circle cx="840" cy="160" r="3"/>
+      </g>
+
+      <!-- 斜めの装飾ライン (MISSION モチーフ 台形の辺) -->
+      <g opacity="0.14" stroke="rgba(0,0,0,0.8)" stroke-width="2">
+        <line x1="-20"  y1="300" x2="200"  y2="180"/>
+        <line x1="200"  y1="180" x2="480"  y2="190"/>
+        <line x1="480"  y1="190" x2="600"  y2="300"/>
+        <line x1="-20"  y1="300" x2="600"  y2="300"/>
+      </g>
+    </svg>
+  </div>
+
+  <!-- ブランドロゴ -->
+  <div class="brand-logo">L<span>B</span>C</div>
+
+  <!-- メインコンテンツ -->
+  <div class="content">
+    <div class="mvv-container">
+
+      <!-- MISSION -->
+      <div class="mvv-block">
+        <span class="mvv-label">MISSION</span>
+        <div class="mvv-divider"></div>
+        <div class="mvv-text-block">
+          <div class="mvv-main">
+            <span class="highlight">LBC</span>という街を創り、<br>
+            <span class="accent-line">関わる全ての人々に青春を届ける。</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- VISION -->
+      <div class="mvv-block">
+        <span class="mvv-label">VISION</span>
+        <div class="mvv-divider"></div>
+        <div class="mvv-text-block">
+          <div class="mvv-main">
+            日本一の<span class="highlight">Family</span>に！！
+          </div>
+        </div>
+      </div>
+
+      <!-- VALUE -->
+      <div class="mvv-block">
+        <span class="mvv-label">VALUE</span>
+        <div class="mvv-divider"></div>
+        <div class="mvv-text-block">
+          <div class="mvv-main">
+            <span class="highlight">Amazing Standard</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ウォーターマーク -->
+  <div class="watermark">LBC</div>
+
+  <!-- 下部アクセントライン -->
+  <div class="bottom-accent"></div>
+
+</div>
+
+</body>
+</html>
