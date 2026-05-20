@@ -43,43 +43,6 @@
     z-index: 0;
   }
 
-  /* ---- 上部の大きなタイポグラフィ帯 ---- */
-  .top-ticker {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 72px;
-    background: var(--dk);
-    display: flex;
-    align-items: center;
-    overflow: hidden;
-    z-index: 20;
-  }
-
-  .ticker-inner {
-    display: flex;
-    gap: 0;
-    animation: ticker 18s linear infinite;
-    white-space: nowrap;
-  }
-
-  .ticker-item {
-    font-size: 18px;
-    font-weight: 900;
-    font-style: italic;
-    color: var(--y);
-    letter-spacing: 2px;
-    padding: 0 40px;
-    text-transform: uppercase;
-  }
-
-  .ticker-dot {
-    color: rgba(245,194,0,0.35);
-    font-size: 24px;
-    align-self: center;
-  }
-
   /* ---- メインコンテンツ ---- */
   .main-content {
     position: relative;
@@ -88,14 +51,14 @@
     height: 100%;
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
-    grid-template-rows: 72px 1fr 80px;
+    grid-template-rows: 1fr 80px;
     padding: 0;
   }
 
   /* 3カラムのMVVエリア */
   .mvv-grid {
     grid-column: 1 / 4;
-    grid-row: 2 / 3;
+    grid-row: 1 / 2;
     display: grid;
     grid-template-columns: 1fr 1px 1fr 1px 1fr;
     align-items: stretch;
@@ -189,7 +152,7 @@
   /* ---- 下部バー ---- */
   .bottom-bar {
     grid-column: 1 / 4;
-    grid-row: 3 / 4;
+    grid-row: 2 / 3;
     background: var(--dk);
     display: flex;
     align-items: center;
@@ -219,11 +182,6 @@
   }
 
   /* ---- アニメーション ---- */
-  @keyframes ticker {
-    from { transform: translateX(0); }
-    to   { transform: translateX(-50%); }
-  }
-
   @keyframes fadeUp {
     from { opacity: 0; transform: translateY(20px); }
     to   { opacity: 1; transform: translateY(0); }
@@ -252,7 +210,7 @@
   /* ---- 右上コーナーSVG装飾 ---- */
   .corner-deco {
     position: absolute;
-    top: 72px;
+    top: 0;
     right: 0;
     z-index: 5;
     opacity: 0.12;
@@ -294,42 +252,6 @@
   <!-- メインコンテンツグリッド -->
   <div class="main-content">
 
-    <!-- 上部テキストティッカー -->
-    <div class="top-ticker" style="grid-column:1/4; grid-row:1/2;">
-      <div class="ticker-inner">
-        <!-- 2セット繰り返してループ -->
-        <span class="ticker-item">LBC</span>
-        <span class="ticker-dot">◆</span>
-        <span class="ticker-item">MISSION</span>
-        <span class="ticker-dot">◆</span>
-        <span class="ticker-item">VISION</span>
-        <span class="ticker-dot">◆</span>
-        <span class="ticker-item">VALUE</span>
-        <span class="ticker-dot">◆</span>
-        <span class="ticker-item">Amazing Standard</span>
-        <span class="ticker-dot">◆</span>
-        <span class="ticker-item">日本一の Family</span>
-        <span class="ticker-dot">◆</span>
-        <span class="ticker-item">青春を届ける</span>
-        <span class="ticker-dot">◆</span>
-        <!-- ループ用コピー -->
-        <span class="ticker-item">LBC</span>
-        <span class="ticker-dot">◆</span>
-        <span class="ticker-item">MISSION</span>
-        <span class="ticker-dot">◆</span>
-        <span class="ticker-item">VISION</span>
-        <span class="ticker-dot">◆</span>
-        <span class="ticker-item">VALUE</span>
-        <span class="ticker-dot">◆</span>
-        <span class="ticker-item">Amazing Standard</span>
-        <span class="ticker-dot">◆</span>
-        <span class="ticker-item">日本一の Family</span>
-        <span class="ticker-dot">◆</span>
-        <span class="ticker-item">青春を届ける</span>
-        <span class="ticker-dot">◆</span>
-      </div>
-    </div>
-
     <!-- 3カラムMVV -->
     <div class="mvv-grid">
 
@@ -340,13 +262,9 @@
         <div class="col-label">MISSION</div>
         <div class="col-heading">
           <span class="white-word">LBC</span>という<br>
-          街を創り、<br>
+          街を創り<br>
           関わる全ての人々に<br>
           青春を届ける。
-        </div>
-        <div class="col-sub">
-          LBCに関わるすべての人の<br>
-          青春体験をデザインする。
         </div>
       </div>
 
@@ -362,10 +280,6 @@
           <span class="white-word">Family</span><br>
           に！！
         </div>
-        <div class="col-sub">
-          仲間・お客様・地域と共に<br>
-          最強のファミリーをつくる。
-        </div>
       </div>
 
       <div class="col-divider"></div>
@@ -378,10 +292,6 @@
         <div class="col-heading">
           <span class="white-word">Amazing</span><br>
           Standard
-        </div>
-        <div class="col-sub">
-          当たり前をアメイジングに。<br>
-          常識を超えた基準で動く。
         </div>
       </div>
 
