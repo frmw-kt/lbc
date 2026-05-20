@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LBC Dashboard Background – Pattern 3</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --y: #F5C200;
+    --y2: #E8B600;
+    --dk: #140F00;
+    --w: #FFFFFF;
+  }
+
+  body {
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+    background: var(--y);
+    font-family: 'Helvetica Neue', 'Noto Sans JP', sans-serif;
+  }
+
+  .scene {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+  }
+
+  /* ---- 繰り返し斜めストライプ背景 ---- */
+  .stripe-bg {
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(
+      -55deg,
+      transparent,
+      transparent 40px,
+      rgba(0,0,0,0.03) 40px,
+      rgba(0,0,0,0.03) 42px
+    );
+    z-index: 0;
+  }
+
+  /* ---- メインコンテンツ ---- */
+  .main-content {
+    position: relative;
+    z-index: 10;
+    width: 100%;
+    height: 100%;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-rows: 1fr 148px 80px;
+    padding: 0;
+  }
+
+  /* 3カラムのMVVエリア */
+  .mvv-grid {
+    grid-column: 1 / 4;
+    grid-row: 1 / 2;
+    display: grid;
+    grid-template-columns: 1fr 1px 1fr 1px 1fr;
+    align-items: stretch;
+    padding: 0 60px;
+    gap: 0;
+  }
+
+  .col-divider {
+    background: rgba(0,0,0,0.12);
+    align-self: stretch;
+    margin: 40px 0;
+  }
+
+  /* 各MVVカラム */
+  .mvv-col {
+    padding: 40px 48px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 20px;
+  }
+
+  .mvv-col:hover .col-bg { opacity: 1; }
+
+  .col-bg {
+    position: absolute;
+    inset: 0;
+    background: rgba(0,0,0,0.04);
+    opacity: 0;
+    transition: opacity 0.3s;
+    border-radius: 4px;
+  }
+
+  .mvv-col { position: relative; }
+
+  /* 数字 */
+  .col-num {
+    font-size: 80px;
+    font-weight: 900;
+    font-style: italic;
+    color: rgba(0,0,0,0.07);
+    line-height: 1;
+    margin-bottom: -16px;
+    user-select: none;
+  }
+
+  /* ラベル */
+  .col-label {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 5px;
+    color: rgba(0,0,0,0.45);
+    text-transform: uppercase;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .col-label::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: rgba(0,0,0,0.2);
+    max-width: 60px;
+  }
+
+  /* メインテキスト */
+  .col-heading {
+    font-size: clamp(22px, 2.6vw, 36px);
+    font-weight: 900;
+    color: var(--dk);
+    line-height: 1.25;
+    letter-spacing: -0.5px;
+  }
+
+  .col-heading .white-word {
+    color: var(--w);
+    font-style: italic;
+    font-size: 1.2em;
+    display: inline-block;
+  }
+
+  /* サブテキスト */
+  .col-sub {
+    font-size: clamp(12px, 1.2vw, 15px);
+    font-weight: 500;
+    color: rgba(0,0,0,0.55);
+    line-height: 1.7;
+  }
+
+  /* ---- ISMセクション ---- */
+  .ism-bar {
+    grid-column: 1 / 4;
+    grid-row: 2 / 3;
+    background: rgba(20, 15, 0, 0.80);
+    display: flex;
+    align-items: center;
+    padding: 0 48px;
+    gap: 36px;
+    border-top: 1px solid rgba(245,194,0,0.25);
+    border-bottom: 1px solid rgba(245,194,0,0.1);
+    animation: fadeUp 0.6s ease 0.5s both;
+  }
+
+  .ism-title-block {
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    min-width: 120px;
+  }
+
+  .ism-title {
+    font-size: 22px;
+    font-weight: 900;
+    font-style: italic;
+    color: var(--y);
+    letter-spacing: -0.5px;
+    line-height: 1;
+  }
+
+  .ism-title span { color: rgba(255,255,255,0.55); }
+
+  .ism-subtitle {
+    font-size: 9px;
+    letter-spacing: 4px;
+    color: rgba(255,255,255,0.35);
+    text-transform: uppercase;
+  }
+
+  .ism-sep {
+    width: 1px;
+    height: 70px;
+    background: rgba(255,255,255,0.15);
+    flex-shrink: 0;
+  }
+
+  .ism-list {
+    flex: 1;
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    grid-template-rows: repeat(2, auto);
+    gap: 8px 20px;
+    align-content: center;
+  }
+
+  .ism-item {
+    font-size: clamp(9px, 0.85vw, 12px);
+    color: rgba(255,255,255,0.65);
+    line-height: 1.4;
+    display: flex;
+    align-items: baseline;
+    gap: 5px;
+    white-space: nowrap;
+  }
+
+  .ism-item .n {
+    color: var(--y);
+    font-weight: 700;
+    font-size: 0.85em;
+    flex-shrink: 0;
+  }
+
+  .ism-item b {
+    color: var(--w);
+    font-weight: 700;
+  }
+
+  .ism-item i {
+    font-style: italic;
+    color: var(--w);
+    font-weight: 700;
+  }
+
+  /* ---- 下部バー ---- */
+  .bottom-bar {
+    grid-column: 1 / 4;
+    grid-row: 3 / 4;
+    background: var(--dk);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 64px;
+    z-index: 20;
+  }
+
+  .bottom-brand {
+    display: flex;
+    align-items: center;
+  }
+
+  .bottom-brand img {
+    height: 52px;
+    width: auto;
+  }
+
+  .bottom-tagline {
+    font-size: 12px;
+    font-weight: 600;
+    color: rgba(255,255,255,0.4);
+    letter-spacing: 3px;
+    text-transform: uppercase;
+  }
+
+  .bottom-a-mark {
+    opacity: 0.6;
+  }
+
+  /* ---- アニメーション ---- */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .mvv-col:nth-child(1) { animation: fadeUp 0.6s ease 0.1s both; }
+  .mvv-col:nth-child(3) { animation: fadeUp 0.6s ease 0.25s both; }
+  .mvv-col:nth-child(5) { animation: fadeUp 0.6s ease 0.4s both; }
+
+  /* ---- 大きなウォーターマーク ---- */
+  .watermark-text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) rotate(-12deg);
+    font-size: clamp(120px, 18vw, 240px);
+    font-weight: 900;
+    font-style: italic;
+    color: rgba(0,0,0,0.04);
+    white-space: nowrap;
+    user-select: none;
+    z-index: 1;
+    letter-spacing: -8px;
+  }
+
+  /* ---- 右上コーナーSVG装飾 ---- */
+  .corner-deco {
+    position: absolute;
+    top: 0;
+    right: 0;
+    z-index: 5;
+    opacity: 0.12;
+    pointer-events: none;
+  }
+
+  @media (max-width: 900px) {
+    .main-content {
+      grid-template-rows: 1fr auto 60px;
+    }
+    .mvv-grid {
+      grid-template-columns: 1fr;
+      padding: 0 28px;
+      overflow-y: auto;
+    }
+    .col-divider { display: none; }
+    .mvv-col { padding: 24px 16px; }
+    .ism-bar {
+      padding: 16px 20px;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+    .ism-list {
+      grid-template-columns: repeat(2, 1fr);
+      grid-template-rows: repeat(5, auto);
+    }
+    .ism-sep { display: none; }
+    .bottom-bar { padding: 0 28px; }
+    .watermark-text { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="scene">
+
+  <!-- ストライプ背景 -->
+  <div class="stripe-bg"></div>
+
+  <!-- ウォーターマーク -->
+  <div class="watermark-text">AMAZING</div>
+
+  <!-- 右上コーナー装飾 -->
+  <svg class="corner-deco" width="280" height="280" viewBox="0 0 280 280" fill="none">
+    <circle cx="280" cy="0"   r="200" stroke="#140F00" stroke-width="2"/>
+    <circle cx="280" cy="0"   r="160" stroke="#140F00" stroke-width="1.5"/>
+    <circle cx="280" cy="0"   r="120" stroke="#140F00" stroke-width="1"/>
+    <line   x1="80"  y1="0"   x2="280" y2="200" stroke="#140F00" stroke-width="1"/>
+    <line   x1="180" y1="0"   x2="280" y2="100" stroke="#140F00" stroke-width="1"/>
+  </svg>
+
+  <!-- メインコンテンツグリッド -->
+  <div class="main-content">
+
+    <!-- 3カラムMVV -->
+    <div class="mvv-grid">
+
+      <!-- MISSION -->
+      <div class="mvv-col">
+        <div class="col-bg"></div>
+        <div class="col-num">01</div>
+        <div class="col-label">MISSION</div>
+        <div class="col-heading">
+          <span class="white-word">LBC</span>という<br>
+          街を創り<br>
+          関わる全ての人々に<br>
+          青春を届ける。
+        </div>
+      </div>
+
+      <div class="col-divider"></div>
+
+      <!-- VISION -->
+      <div class="mvv-col">
+        <div class="col-bg"></div>
+        <div class="col-num">02</div>
+        <div class="col-label">VISION</div>
+        <div class="col-heading">
+          日本一の<br>
+          <span class="white-word">Family</span><br>
+          に！！
+        </div>
+      </div>
+
+      <div class="col-divider"></div>
+
+      <!-- VALUE -->
+      <div class="mvv-col">
+        <div class="col-bg"></div>
+        <div class="col-num">03</div>
+        <div class="col-label">VALUE</div>
+        <div class="col-heading">
+          <span class="white-word">Amazing</span><br>
+          Standard
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ISMセクション -->
+    <div class="ism-bar">
+
+      <div class="ism-title-block">
+        <div class="ism-title">LBC <span>ism</span></div>
+        <div class="ism-subtitle">行動指針</div>
+      </div>
+
+      <div class="ism-sep"></div>
+
+      <div class="ism-list">
+        <div class="ism-item"><span class="n">1.</span><span><b>お金</b>で買えないものを<b>大切</b>にする</span></div>
+        <div class="ism-item"><span class="n">2.</span><span>嘘をつかない</span></div>
+        <div class="ism-item"><span class="n">3.</span><span><i>Give and Give</i></span></div>
+        <div class="ism-item"><span class="n">4.</span><span><b>考える</b>より、まず<b>行動</b></span></div>
+        <div class="ism-item"><span class="n">5.</span><span>まあまあでは終わらせない</span></div>
+        <div class="ism-item"><span class="n">6.</span><span><b>限界</b>は<b>仲間</b>と超える</span></div>
+        <div class="ism-item"><span class="n">7.</span><span><b>成長</b>＝<b>素直</b>×<b>謙虚</b></span></div>
+        <div class="ism-item"><span class="n">8.</span><span>ベクトルは常に自分に</span></div>
+        <div class="ism-item"><span class="n">9.</span><span><b>継続</b>がブランドを創る</span></div>
+        <div class="ism-item"><span class="n">10.</span><span>毎日が<b>文化祭前日</b></span></div>
+      </div>
+
+    </div>
+
+    <!-- 下部バー -->
+    <div class="bottom-bar">
+      <div class="bottom-brand">
+        <img src="img_logo.png" alt="LBC HOLDINGS">
+      </div>
+      <div class="bottom-tagline">Life is Amazing — since LBC</div>
+      <svg class="bottom-a-mark" width="52" height="38" viewBox="0 0 52 38" fill="none">
+        <line x1="2"  y1="2"  x2="26" y2="36" stroke="#F5C200" stroke-width="3" stroke-linecap="round"/>
+        <line x1="26" y1="36" x2="50" y2="36" stroke="#F5C200" stroke-width="3" stroke-linecap="round"/>
+        <line x1="50" y1="36" x2="36" y2="14" stroke="#F5C200" stroke-width="3" stroke-linecap="round"/>
+        <line x1="9"  y1="22" x2="34" y2="22" stroke="#F5C200" stroke-width="2" stroke-linecap="round"/>
+      </svg>
+    </div>
+
+  </div>
+
+</div>
+
+</body>
+</html>
