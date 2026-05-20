@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LBC Dashboard Background – Pattern 2</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --y: #F5C200;
+    --dk: #140F00;
+    --w: #FFFFFF;
+  }
+
+  body {
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+    background: var(--dk);
+    font-family: 'Helvetica Neue', 'Noto Sans JP', sans-serif;
+  }
+
+  .scene {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+  }
+
+  /* ---- イエローの大きな斜めブロック ---- */
+  .yellow-block {
+    position: absolute;
+    top: -10%;
+    right: -5%;
+    width: 62%;
+    height: 120%;
+    background: var(--y);
+    clip-path: polygon(18% 0%, 100% 0%, 100% 100%, 0% 100%);
+  }
+
+  /* イエローブロック内の暗いサブシェイプ */
+  .yellow-block::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    width: 55%;
+    height: 35%;
+    background: rgba(0,0,0,0.07);
+    clip-path: polygon(25% 0%, 100% 0%, 100% 100%, 0% 100%);
+  }
+
+  /* ---- ダーク側 装飾ライン ---- */
+  .dark-lines {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+  }
+
+  /* ---- 左ダーク側テキスト ---- */
+  .left-panel {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 44%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 48px 48px 48px 64px;
+    z-index: 10;
+  }
+
+  .lbc-mark {
+    font-size: clamp(72px, 9vw, 120px);
+    font-weight: 900;
+    font-style: italic;
+    color: var(--y);
+    line-height: 0.9;
+    letter-spacing: -4px;
+    animation: dropIn 0.7s cubic-bezier(.22,.9,.36,1) both;
+  }
+
+  .mission-wrap {
+    margin-top: 32px;
+    animation: dropIn 0.7s cubic-bezier(.22,.9,.36,1) 0.15s both;
+  }
+
+  .mission-label {
+    font-size: 10px;
+    letter-spacing: 4px;
+    color: rgba(255,255,255,0.35);
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+
+  .mission-text {
+    font-size: clamp(15px, 1.8vw, 22px);
+    font-weight: 700;
+    color: var(--w);
+    line-height: 1.6;
+  }
+
+  .mission-text em {
+    font-style: normal;
+    color: var(--y);
+    font-weight: 900;
+  }
+
+  /* ---- 黄色いスラッシュライン ---- */
+  .slash-accent {
+    position: absolute;
+    left: 42%;
+    top: 0;
+    height: 100%;
+    width: 6px;
+    background: var(--y);
+    transform: skewX(-4deg);
+    z-index: 20;
+    opacity: 0.6;
+  }
+
+  /* ---- 右イエロー側テキスト ---- */
+  .right-panel {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 58%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 48px 64px 48px 10%;
+    z-index: 10;
+  }
+
+  .vision-block {
+    animation: slideRight 0.7s cubic-bezier(.22,.9,.36,1) 0.25s both;
+  }
+
+  .vision-label {
+    font-size: 10px;
+    letter-spacing: 4px;
+    color: rgba(0,0,0,0.4);
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+
+  .vision-text {
+    font-size: clamp(28px, 4vw, 56px);
+    font-weight: 900;
+    color: var(--dk);
+    line-height: 1.1;
+    letter-spacing: -1px;
+  }
+
+  .vision-text .family {
+    font-style: italic;
+    color: var(--w);
+    font-size: 1.15em;
+    opacity: 0.85;
+  }
+
+  .divider-line {
+    width: 80px;
+    height: 3px;
+    background: var(--dk);
+    opacity: 0.2;
+    margin: 28px 0;
+    animation: slideRight 0.7s cubic-bezier(.22,.9,.36,1) 0.35s both;
+  }
+
+  .value-block {
+    animation: slideRight 0.7s cubic-bezier(.22,.9,.36,1) 0.45s both;
+  }
+
+  .value-label {
+    font-size: 10px;
+    letter-spacing: 4px;
+    color: rgba(0,0,0,0.4);
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+
+  /* A ラインモチーフ SVG */
+  .a-svg {
+    display: inline-block;
+    vertical-align: middle;
+    margin-right: 12px;
+    opacity: 0.5;
+  }
+
+  .value-text {
+    font-size: clamp(22px, 3vw, 42px);
+    font-weight: 900;
+    font-style: italic;
+    color: var(--dk);
+    line-height: 1;
+    display: flex;
+    align-items: center;
+  }
+
+  /* ---- 右側のAラインSVG装飾 ---- */
+  .deco-svg {
+    position: absolute;
+    bottom: 32px;
+    right: 48px;
+    opacity: 0.15;
+    z-index: 5;
+  }
+
+  /* ---- ダーク側のグリッドドット ---- */
+  .grid-dots {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 42%;
+    height: 100%;
+    background-image: radial-gradient(circle, rgba(245,194,0,0.25) 1px, transparent 1px);
+    background-size: 36px 36px;
+    z-index: 1;
+  }
+
+  /* ---- 下部ストリップ ---- */
+  .bottom-strip {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: var(--y);
+    z-index: 30;
+  }
+
+  @keyframes dropIn {
+    from { opacity: 0; transform: translateY(-24px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes slideRight {
+    from { opacity: 0; transform: translateX(24px); }
+    to   { opacity: 1; transform: translateX(0); }
+  }
+
+  @media (max-width: 768px) {
+    .left-panel, .right-panel { width: 100%; padding: 24px; }
+    .yellow-block { display: none; }
+    body { background: var(--y); }
+    .lbc-mark { color: var(--dk); }
+    .mission-text { color: var(--dk); }
+    .grid-dots { display: none; }
+    .slash-accent { display: none; }
+    .left-panel {
+      height: 50%;
+      top: 0;
+      justify-content: flex-end;
+      padding-bottom: 16px;
+    }
+    .right-panel {
+      height: 50%;
+      top: 50%;
+      justify-content: flex-start;
+      padding-top: 16px;
+      padding-left: 24px;
+    }
+  }
+</style>
+</head>
+<body>
+
+<div class="scene">
+
+  <!-- ダーク側グリッドドット -->
+  <div class="grid-dots"></div>
+
+  <!-- イエロー斜めブロック -->
+  <div class="yellow-block"></div>
+
+  <!-- 境界スラッシュライン -->
+  <div class="slash-accent"></div>
+
+  <!-- 左パネル（ダーク） -->
+  <div class="left-panel">
+    <div class="lbc-mark">LBC</div>
+    <div class="mission-wrap">
+      <div class="mission-label">MISSION</div>
+      <div class="mission-text">
+        <em>LBC</em>という街を創り、<br>
+        関わる全ての人々に<br>
+        青春を届ける。
+      </div>
+    </div>
+  </div>
+
+  <!-- 右パネル（イエロー） -->
+  <div class="right-panel">
+
+    <div class="vision-block">
+      <div class="vision-label">VISION</div>
+      <div class="vision-text">
+        日本一の<span class="family">Family</span>に！！
+      </div>
+    </div>
+
+    <div class="divider-line"></div>
+
+    <div class="value-block">
+      <div class="value-label">VALUE</div>
+      <div class="value-text">
+        <svg class="a-svg" width="44" height="36" viewBox="0 0 44 36" fill="none">
+          <line x1="2"  y1="2"  x2="22" y2="34" stroke="#140F00" stroke-width="3" stroke-linecap="round"/>
+          <line x1="22" y1="34" x2="42" y2="34" stroke="#140F00" stroke-width="3" stroke-linecap="round"/>
+          <line x1="42" y1="34" x2="30" y2="12" stroke="#140F00" stroke-width="3" stroke-linecap="round"/>
+          <line x1="8"  y1="20" x2="28" y2="20" stroke="#140F00" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+        Amazing Standard
+      </div>
+    </div>
+
+  </div>
+
+  <!-- 右下の装飾SVG -->
+  <svg class="deco-svg" width="220" height="120" viewBox="0 0 220 120" fill="none">
+    <line x1="0"   y1="60"  x2="60"  y2="0"   stroke="#140F00" stroke-width="2"/>
+    <line x1="60"  y1="0"   x2="120" y2="60"  stroke="#140F00" stroke-width="2"/>
+    <line x1="120" y1="60"  x2="220" y2="60"  stroke="#140F00" stroke-width="2"/>
+    <line x1="40"  y1="60"  x2="100" y2="60"  stroke="#140F00" stroke-width="1.5" opacity="0.4"/>
+  </svg>
+
+  <!-- ダークの装飾SVG -->
+  <svg style="position:absolute;top:0;left:0;width:44%;height:100%;z-index:2;pointer-events:none;"
+       viewBox="0 0 640 900" preserveAspectRatio="xMidYMid slice" fill="none">
+    <line x1="60"  y1="820" x2="200" y2="700" stroke="#F5C200" stroke-width="1.5" opacity="0.3"/>
+    <line x1="200" y1="700" x2="400" y2="820" stroke="#F5C200" stroke-width="1.5" opacity="0.3"/>
+    <rect x="30" y="30" width="50" height="50" stroke="#F5C200" stroke-width="1" opacity="0.15"
+          transform="rotate(15 55 55)"/>
+  </svg>
+
+  <!-- 下部ライン -->
+  <div class="bottom-strip"></div>
+
+</div>
+
+</body>
+</html>

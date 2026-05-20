@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LBC Dashboard Background – Pattern 3</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --y: #F5C200;
+    --y2: #E8B600;
+    --dk: #140F00;
+    --w: #FFFFFF;
+  }
+
+  body {
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+    background: var(--y);
+    font-family: 'Helvetica Neue', 'Noto Sans JP', sans-serif;
+  }
+
+  .scene {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+  }
+
+  /* ---- 繰り返し斜めストライプ背景 ---- */
+  .stripe-bg {
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(
+      -55deg,
+      transparent,
+      transparent 40px,
+      rgba(0,0,0,0.03) 40px,
+      rgba(0,0,0,0.03) 42px
+    );
+    z-index: 0;
+  }
+
+  /* ---- 上部の大きなタイポグラフィ帯 ---- */
+  .top-ticker {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 72px;
+    background: var(--dk);
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+    z-index: 20;
+  }
+
+  .ticker-inner {
+    display: flex;
+    gap: 0;
+    animation: ticker 18s linear infinite;
+    white-space: nowrap;
+  }
+
+  .ticker-item {
+    font-size: 18px;
+    font-weight: 900;
+    font-style: italic;
+    color: var(--y);
+    letter-spacing: 2px;
+    padding: 0 40px;
+    text-transform: uppercase;
+  }
+
+  .ticker-dot {
+    color: rgba(245,194,0,0.35);
+    font-size: 24px;
+    align-self: center;
+  }
+
+  /* ---- メインコンテンツ ---- */
+  .main-content {
+    position: relative;
+    z-index: 10;
+    width: 100%;
+    height: 100%;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-rows: 72px 1fr 80px;
+    padding: 0;
+  }
+
+  /* 3カラムのMVVエリア */
+  .mvv-grid {
+    grid-column: 1 / 4;
+    grid-row: 2 / 3;
+    display: grid;
+    grid-template-columns: 1fr 1px 1fr 1px 1fr;
+    align-items: stretch;
+    padding: 0 60px;
+    gap: 0;
+  }
+
+  .col-divider {
+    background: rgba(0,0,0,0.12);
+    align-self: stretch;
+    margin: 40px 0;
+  }
+
+  /* 各MVVカラム */
+  .mvv-col {
+    padding: 40px 48px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 20px;
+  }
+
+  .mvv-col:hover .col-bg { opacity: 1; }
+
+  .col-bg {
+    position: absolute;
+    inset: 0;
+    background: rgba(0,0,0,0.04);
+    opacity: 0;
+    transition: opacity 0.3s;
+    border-radius: 4px;
+  }
+
+  .mvv-col { position: relative; }
+
+  /* 数字 */
+  .col-num {
+    font-size: 80px;
+    font-weight: 900;
+    font-style: italic;
+    color: rgba(0,0,0,0.07);
+    line-height: 1;
+    margin-bottom: -16px;
+    user-select: none;
+  }
+
+  /* ラベル */
+  .col-label {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 5px;
+    color: rgba(0,0,0,0.45);
+    text-transform: uppercase;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .col-label::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: rgba(0,0,0,0.2);
+    max-width: 60px;
+  }
+
+  /* メインテキスト */
+  .col-heading {
+    font-size: clamp(22px, 2.6vw, 36px);
+    font-weight: 900;
+    color: var(--dk);
+    line-height: 1.25;
+    letter-spacing: -0.5px;
+  }
+
+  .col-heading .white-word {
+    color: var(--w);
+    font-style: italic;
+    font-size: 1.2em;
+    display: inline-block;
+  }
+
+  /* サブテキスト */
+  .col-sub {
+    font-size: clamp(12px, 1.2vw, 15px);
+    font-weight: 500;
+    color: rgba(0,0,0,0.55);
+    line-height: 1.7;
+  }
+
+  /* ---- 下部バー ---- */
+  .bottom-bar {
+    grid-column: 1 / 4;
+    grid-row: 3 / 4;
+    background: var(--dk);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 64px;
+    z-index: 20;
+  }
+
+  .bottom-brand {
+    font-size: 28px;
+    font-weight: 900;
+    font-style: italic;
+    color: var(--y);
+    letter-spacing: -1px;
+  }
+
+  .bottom-tagline {
+    font-size: 12px;
+    font-weight: 600;
+    color: rgba(255,255,255,0.4);
+    letter-spacing: 3px;
+    text-transform: uppercase;
+  }
+
+  .bottom-a-mark {
+    opacity: 0.6;
+  }
+
+  /* ---- アニメーション ---- */
+  @keyframes ticker {
+    from { transform: translateX(0); }
+    to   { transform: translateX(-50%); }
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .mvv-col:nth-child(1) { animation: fadeUp 0.6s ease 0.1s both; }
+  .mvv-col:nth-child(3) { animation: fadeUp 0.6s ease 0.25s both; }
+  .mvv-col:nth-child(5) { animation: fadeUp 0.6s ease 0.4s both; }
+
+  /* ---- 大きなウォーターマーク ---- */
+  .watermark-text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) rotate(-12deg);
+    font-size: clamp(120px, 18vw, 240px);
+    font-weight: 900;
+    font-style: italic;
+    color: rgba(0,0,0,0.04);
+    white-space: nowrap;
+    user-select: none;
+    z-index: 1;
+    letter-spacing: -8px;
+  }
+
+  /* ---- 右上コーナーSVG装飾 ---- */
+  .corner-deco {
+    position: absolute;
+    top: 72px;
+    right: 0;
+    z-index: 5;
+    opacity: 0.12;
+    pointer-events: none;
+  }
+
+  @media (max-width: 900px) {
+    .mvv-grid {
+      grid-template-columns: 1fr;
+      padding: 0 28px;
+      overflow-y: auto;
+    }
+    .col-divider { display: none; }
+    .mvv-col { padding: 24px 16px; }
+    .bottom-bar { padding: 0 28px; }
+    .watermark-text { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="scene">
+
+  <!-- ストライプ背景 -->
+  <div class="stripe-bg"></div>
+
+  <!-- ウォーターマーク -->
+  <div class="watermark-text">AMAZING</div>
+
+  <!-- 右上コーナー装飾 -->
+  <svg class="corner-deco" width="280" height="280" viewBox="0 0 280 280" fill="none">
+    <circle cx="280" cy="0"   r="200" stroke="#140F00" stroke-width="2"/>
+    <circle cx="280" cy="0"   r="160" stroke="#140F00" stroke-width="1.5"/>
+    <circle cx="280" cy="0"   r="120" stroke="#140F00" stroke-width="1"/>
+    <line   x1="80"  y1="0"   x2="280" y2="200" stroke="#140F00" stroke-width="1"/>
+    <line   x1="180" y1="0"   x2="280" y2="100" stroke="#140F00" stroke-width="1"/>
+  </svg>
+
+  <!-- メインコンテンツグリッド -->
+  <div class="main-content">
+
+    <!-- 上部テキストティッカー -->
+    <div class="top-ticker" style="grid-column:1/4; grid-row:1/2;">
+      <div class="ticker-inner">
+        <!-- 2セット繰り返してループ -->
+        <span class="ticker-item">LBC</span>
+        <span class="ticker-dot">◆</span>
+        <span class="ticker-item">MISSION</span>
+        <span class="ticker-dot">◆</span>
+        <span class="ticker-item">VISION</span>
+        <span class="ticker-dot">◆</span>
+        <span class="ticker-item">VALUE</span>
+        <span class="ticker-dot">◆</span>
+        <span class="ticker-item">Amazing Standard</span>
+        <span class="ticker-dot">◆</span>
+        <span class="ticker-item">日本一の Family</span>
+        <span class="ticker-dot">◆</span>
+        <span class="ticker-item">青春を届ける</span>
+        <span class="ticker-dot">◆</span>
+        <!-- ループ用コピー -->
+        <span class="ticker-item">LBC</span>
+        <span class="ticker-dot">◆</span>
+        <span class="ticker-item">MISSION</span>
+        <span class="ticker-dot">◆</span>
+        <span class="ticker-item">VISION</span>
+        <span class="ticker-dot">◆</span>
+        <span class="ticker-item">VALUE</span>
+        <span class="ticker-dot">◆</span>
+        <span class="ticker-item">Amazing Standard</span>
+        <span class="ticker-dot">◆</span>
+        <span class="ticker-item">日本一の Family</span>
+        <span class="ticker-dot">◆</span>
+        <span class="ticker-item">青春を届ける</span>
+        <span class="ticker-dot">◆</span>
+      </div>
+    </div>
+
+    <!-- 3カラムMVV -->
+    <div class="mvv-grid">
+
+      <!-- MISSION -->
+      <div class="mvv-col">
+        <div class="col-bg"></div>
+        <div class="col-num">01</div>
+        <div class="col-label">MISSION</div>
+        <div class="col-heading">
+          <span class="white-word">LBC</span>という<br>
+          街を創り、<br>
+          関わる全ての人々に<br>
+          青春を届ける。
+        </div>
+        <div class="col-sub">
+          LBCに関わるすべての人の<br>
+          青春体験をデザインする。
+        </div>
+      </div>
+
+      <div class="col-divider"></div>
+
+      <!-- VISION -->
+      <div class="mvv-col">
+        <div class="col-bg"></div>
+        <div class="col-num">02</div>
+        <div class="col-label">VISION</div>
+        <div class="col-heading">
+          日本一の<br>
+          <span class="white-word">Family</span><br>
+          に！！
+        </div>
+        <div class="col-sub">
+          仲間・お客様・地域と共に<br>
+          最強のファミリーをつくる。
+        </div>
+      </div>
+
+      <div class="col-divider"></div>
+
+      <!-- VALUE -->
+      <div class="mvv-col">
+        <div class="col-bg"></div>
+        <div class="col-num">03</div>
+        <div class="col-label">VALUE</div>
+        <div class="col-heading">
+          <span class="white-word">Amazing</span><br>
+          Standard
+        </div>
+        <div class="col-sub">
+          当たり前をアメイジングに。<br>
+          常識を超えた基準で動く。
+        </div>
+      </div>
+
+    </div>
+
+    <!-- 下部バー -->
+    <div class="bottom-bar">
+      <div class="bottom-brand">LBC</div>
+      <div class="bottom-tagline">Life is Amazing — since LBC</div>
+      <svg class="bottom-a-mark" width="52" height="38" viewBox="0 0 52 38" fill="none">
+        <line x1="2"  y1="2"  x2="26" y2="36" stroke="#F5C200" stroke-width="3" stroke-linecap="round"/>
+        <line x1="26" y1="36" x2="50" y2="36" stroke="#F5C200" stroke-width="3" stroke-linecap="round"/>
+        <line x1="50" y1="36" x2="36" y2="14" stroke="#F5C200" stroke-width="3" stroke-linecap="round"/>
+        <line x1="9"  y1="22" x2="34" y2="22" stroke="#F5C200" stroke-width="2" stroke-linecap="round"/>
+      </svg>
+    </div>
+
+  </div>
+
+</div>
+
+</body>
+</html>

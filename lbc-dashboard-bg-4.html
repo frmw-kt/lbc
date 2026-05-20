@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LBC Dashboard Background – Pattern 4 (Image)</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --y: #F5C200;
+    --dk: #140F00;
+    --w: #FFFFFF;
+  }
+
+  body {
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+    background: var(--dk);
+    font-family: 'Helvetica Neue', 'Noto Sans JP', sans-serif;
+  }
+
+  .scene {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    display: flex;
+  }
+
+  /* ---- 各パネル ---- */
+  .panel {
+    position: relative;
+    flex: 1;
+    height: 100%;
+    overflow: hidden;
+    cursor: default;
+    transition: flex 0.6s cubic-bezier(.4,0,.2,1);
+  }
+
+  .panel:hover { flex: 1.6; }
+
+  /* 画像レイヤー */
+  .panel-img {
+    position: absolute;
+    inset: 0;
+    background-size: cover;
+    background-position: center;
+    transition: transform 0.7s cubic-bezier(.4,0,.2,1),
+                filter 0.7s ease;
+    transform: scale(1.05);
+    filter: saturate(1.1) brightness(0.92);
+  }
+
+  .panel:hover .panel-img {
+    transform: scale(1.0);
+    filter: saturate(1.3) brightness(1.0);
+  }
+
+  .panel-mission .panel-img { background-image: url('img_mission.png'); }
+  .panel-vision  .panel-img { background-image: url('img_vision.png');  }
+  .panel-value   .panel-img { background-image: url('img_value.png');   }
+
+  /* イエローオーバーレイ */
+  .panel-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(245, 194, 0, 0.55);
+    mix-blend-mode: multiply;
+    transition: opacity 0.5s ease;
+    z-index: 2;
+  }
+
+  .panel:hover .panel-overlay { opacity: 0.3; }
+
+  /* ダークグラデオーバーレイ（下から） */
+  .panel-grad {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      to top,
+      rgba(20, 15, 0, 0.85) 0%,
+      rgba(20, 15, 0, 0.2)  45%,
+      transparent           100%
+    );
+    z-index: 3;
+    transition: opacity 0.5s ease;
+  }
+
+  .panel:hover .panel-grad { opacity: 0.7; }
+
+  /* 縦の区切り線 */
+  .panel:not(:last-child)::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 2px;
+    height: 100%;
+    background: rgba(255,255,255,0.2);
+    z-index: 10;
+  }
+
+  /* ---- テキストコンテンツ ---- */
+  .panel-content {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 40px 36px;
+    z-index: 5;
+    transform: translateY(8px);
+    transition: transform 0.5s ease;
+  }
+
+  .panel:hover .panel-content { transform: translateY(0); }
+
+  .p-label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 5px;
+    color: var(--y);
+    text-transform: uppercase;
+    margin-bottom: 10px;
+    opacity: 0.85;
+  }
+
+  .p-title {
+    font-size: clamp(18px, 2vw, 28px);
+    font-weight: 900;
+    color: var(--w);
+    line-height: 1.35;
+    letter-spacing: -0.3px;
+  }
+
+  .p-title .italic {
+    font-style: italic;
+    color: var(--y);
+  }
+
+  .p-sub {
+    font-size: clamp(11px, 1vw, 14px);
+    color: rgba(255,255,255,0.55);
+    margin-top: 10px;
+    line-height: 1.6;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.5s ease, opacity 0.5s ease;
+    opacity: 0;
+  }
+
+  .panel:hover .p-sub {
+    max-height: 80px;
+    opacity: 1;
+  }
+
+  /* ---- 上部ラベル（通常時） ---- */
+  .panel-top {
+    position: absolute;
+    top: 32px;
+    left: 36px;
+    z-index: 5;
+    transition: opacity 0.4s;
+  }
+
+  .panel:hover .panel-top { opacity: 0; }
+
+  .panel-num {
+    font-size: 80px;
+    font-weight: 900;
+    font-style: italic;
+    color: rgba(255,255,255,0.15);
+    line-height: 1;
+    user-select: none;
+  }
+
+  /* ---- LBCブランド帯（上部） ---- */
+  .top-bar {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 56px;
+    background: var(--dk);
+    z-index: 20;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 48px;
+  }
+
+  .top-brand {
+    font-size: 26px;
+    font-weight: 900;
+    font-style: italic;
+    color: var(--y);
+    letter-spacing: -1px;
+  }
+
+  .top-tagline {
+    font-size: 11px;
+    letter-spacing: 3px;
+    color: rgba(255,255,255,0.35);
+    text-transform: uppercase;
+  }
+
+  /* ---- 斜めSVGデコ（右上） ---- */
+  .svg-deco-top {
+    position: absolute;
+    top: 56px;
+    right: 0;
+    z-index: 6;
+    pointer-events: none;
+    opacity: 0.22;
+  }
+
+  /* ---- アニメーション ---- */
+  .panel-mission { animation: fadeIn 0.6s ease 0.05s both; }
+  .panel-vision  { animation: fadeIn 0.6s ease 0.15s both; }
+  .panel-value   { animation: fadeIn 0.6s ease 0.25s both; }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: scaleY(0.97); }
+    to   { opacity: 1; transform: scaleY(1); }
+  }
+
+  @media (max-width: 768px) {
+    .scene { flex-direction: column; }
+    .panel { flex: 1 !important; }
+    .panel:hover { flex: 1.4 !important; }
+    .top-bar { height: 44px; padding: 0 20px; }
+    .panel-content { padding: 20px 20px; }
+    .p-title { font-size: 16px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- 上部ブランドバー -->
+<div class="top-bar">
+  <div class="top-brand">LBC</div>
+  <div class="top-tagline">Mission · Vision · Value</div>
+</div>
+
+<!-- 右上SVG装飾 -->
+<svg class="svg-deco-top" width="200" height="160" viewBox="0 0 200 160" fill="none">
+  <line x1="40"  y1="0"  x2="200" y2="0"   stroke="white" stroke-width="1.5"/>
+  <line x1="200" y1="0"  x2="200" y2="160" stroke="white" stroke-width="1.5"/>
+  <line x1="40"  y1="0"  x2="200" y2="160" stroke="white" stroke-width="1"/>
+  <line x1="0"   y1="40" x2="160" y2="160" stroke="white" stroke-width="0.8" opacity="0.5"/>
+</svg>
+
+<div class="scene" style="padding-top:56px;">
+
+  <!-- MISSION パネル -->
+  <div class="panel panel-mission">
+    <div class="panel-img"></div>
+    <div class="panel-overlay"></div>
+    <div class="panel-grad"></div>
+    <div class="panel-top">
+      <div class="panel-num">01</div>
+    </div>
+    <div class="panel-content">
+      <div class="p-label">Mission</div>
+      <div class="p-title">
+        <span class="italic">LBC</span>という街を創り、<br>
+        関わる全ての人々に<br>青春を届ける。
+      </div>
+      <div class="p-sub">LBCに関わるすべての人の青春体験をデザインすることが私たちの使命です。</div>
+    </div>
+  </div>
+
+  <!-- VISION パネル -->
+  <div class="panel panel-vision">
+    <div class="panel-img"></div>
+    <div class="panel-overlay"></div>
+    <div class="panel-grad"></div>
+    <div class="panel-top">
+      <div class="panel-num">02</div>
+    </div>
+    <div class="panel-content">
+      <div class="p-label">Vision</div>
+      <div class="p-title">
+        日本一の<br>
+        <span class="italic">Family</span>に！！
+      </div>
+      <div class="p-sub">仲間・お客様・地域と共に、最強のファミリーをつくり上げていきます。</div>
+    </div>
+  </div>
+
+  <!-- VALUE パネル -->
+  <div class="panel panel-value">
+    <div class="panel-img"></div>
+    <div class="panel-overlay"></div>
+    <div class="panel-grad"></div>
+    <div class="panel-top">
+      <div class="panel-num">03</div>
+    </div>
+    <div class="panel-content">
+      <div class="p-label">Value</div>
+      <div class="p-title">
+        <span class="italic">Amazing</span><br>Standard
+      </div>
+      <div class="p-sub">当たり前をアメイジングに。常識を超えた基準で、毎日を動く。</div>
+    </div>
+  </div>
+
+</div>
+
+</body>
+</html>
